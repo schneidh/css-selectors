@@ -34,6 +34,9 @@ public class TagChecker extends NodeTraversalChecker {
     /** The result of the checks. */
     private Set<Node> result;
     
+    /** Whether the underlying DOM is case sensitive */
+    private boolean caseSensitive;
+    
     /**
      * Create a new instance.
      * 
@@ -51,6 +54,11 @@ public class TagChecker extends NodeTraversalChecker {
     public Set<Node> check(Set<Node> nodes, Node root) throws NodeSelectorException {
         Assert.notNull(nodes, "nodes is null!");
         this.nodes = nodes;
+   	if (root instanceof Document) {
+			this.caseSensitive = isCaseSensitive((Document) root);
+		} else {
+			this.caseSensitive = isCaseSensitive(root.getOwnerDocument());
+		}
         result = new LinkedHashSet<Node>();
         switch (selector.getCombinator()) {
         case DESCENDANT:
@@ -68,6 +76,36 @@ public class TagChecker extends NodeTraversalChecker {
         }
         
         return result;
+    }
+  
+    /**
+     * Determines if the given document is case sensitive.  This class will respect the 
+     * documents case sensitivity.
+     * 
+     * @param doc the document to check.
+     * @return true if the document is case sensitive, otherwise false.
+     */
+    private boolean isCaseSensitive(Document doc) {
+		Element lowerA = doc.createElement("a");
+		Element upperA = doc.createElement("A");
+		return !lowerA.isEqualNode(upperA);
+    }
+
+    /**
+     * Determines if the given tags are equal.
+     * 
+     * @param tagA the first tag to check.
+     * @param tagB the second tag to check.
+     * @return true if the tags are equal, otherwise false.
+     */
+    private boolean tagsEqual(String tagA, String tagB) {
+    	boolean match = false;
+    	if (caseSensitive) {
+    		match = tagA.equals(tagB);
+    	} else {
+    		match = tagA.equalsIgnoreCase(tagB);
+    	}
+    	return match;
     }
     
     /**
@@ -109,7 +147,7 @@ public class TagChecker extends NodeTraversalChecker {
                 }
                 
                 String tag = selector.getTagName();
-                if (tag.equals(node.getNodeName()) || tag.equals(Selector.UNIVERSAL_TAG)) {
+                if (tagsEqual(tag, node.getNodeName()) || tag.equals(Selector.UNIVERSAL_TAG)) {
                     result.add(node);
                 }
             }
@@ -126,7 +164,7 @@ public class TagChecker extends NodeTraversalChecker {
             Node n = DOMHelper.getNextSiblingElement(node);
             if (n != null) {
                 String tag = selector.getTagName();
-                if (tag.equals(n.getNodeName()) || tag.equals(Selector.UNIVERSAL_TAG)) {
+                if (tagsEqual(tag, node.getNodeName()) || tag.equals(Selector.UNIVERSAL_TAG)) {
                     result.add(n);
                 }
             }
@@ -142,7 +180,7 @@ public class TagChecker extends NodeTraversalChecker {
         for (Node node : nodes) {
             Node n = DOMHelper.getNextSiblingElement(node);
             while (n != null) {
-                if (selector.getTagName().equals(n.getNodeName()) ||
+                if (tagsEqual(selector.getTagName(), n.getNodeName()) ||
                         selector.getTagName().equals(Selector.UNIVERSAL_TAG)) {
                     result.add(n);
                 }
