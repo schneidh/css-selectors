@@ -1,17 +1,28 @@
 package se.fishtank.css.selectors;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
+import java.io.StringReader;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 import se.fishtank.css.selectors.dom.DOMNodeSelector;
+
+import com.sun.org.apache.xerces.internal.dom.DocumentImpl;
 
 public class DOMNodeSelectorTest {
     
@@ -102,4 +113,63 @@ public class DOMNodeSelectorTest {
         Assert.assertEquals(meta, new DOMNodeSelector(meta).querySelector(":root"));
     }
     
+  @Test
+  public void testCaseSensitive() throws Exception
+  {
+    DocumentBuilderFactory fact = DocumentBuilderFactory.newInstance();
+    DocumentBuilder builder = fact.newDocumentBuilder();
+    String docStr = "<html><body><a href=\"blue.html\">blue <b>cow</b></a></body></html>";
+    Document doc = builder.parse(new InputSource(new StringReader(docStr)));
+    DOMNodeSelector selector = new DOMNodeSelector(doc);
+
+    assertEquals("body", selector.querySelector("body").getNodeName());
+    assertNull(selector.querySelector("BODY")); // not found
+
+    assertEquals("a", selector.querySelector("body > a").getNodeName());
+    assertNull("a", selector.querySelector("body > A")); // not found
+
+    Element body = (Element) doc.getElementsByTagName("body").item(0);
+    selector = new DOMNodeSelector(body);
+
+    assertEquals("a", selector.querySelector("a").getNodeName());
+    assertNull(selector.querySelector("A")); // not found
+
+    assertEquals("b", selector.querySelector("a > b").getNodeName());
+    assertNull(selector.querySelector("a > B")); // not found
+  }
+
+  @Test
+  public void testCaseInsensitive() throws Exception
+  {
+    Document doc = new DocumentImpl()
+      {
+        @Override
+        public Element createElement(String tagName) throws DOMException
+        {
+          tagName = tagName.toUpperCase();
+          return super.createElement(tagName);
+        }
+
+        @Override
+        public NodeList getElementsByTagName(String tagName)
+        {
+          tagName = tagName.toUpperCase();
+          return super.getElementsByTagName(tagName);
+        }
+      };
+    Element a = doc.createElement("a");
+    a.setTextContent("a");
+    Element body = doc.createElement("body");
+    body.appendChild(a);
+    Element html = doc.createElement("html");
+    html.appendChild(body);
+    doc.appendChild(html);
+    DOMNodeSelector selector = new DOMNodeSelector(doc);
+
+    assertEquals("BODY", selector.querySelector("body").getNodeName());
+    assertEquals("BODY", selector.querySelector("BODY").getNodeName());
+
+    assertEquals("A", selector.querySelector("body > a").getNodeName());
+    assertEquals("A", selector.querySelector("body > A").getNodeName());
+  }
 }
