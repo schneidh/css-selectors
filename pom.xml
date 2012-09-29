@@ -4,7 +4,7 @@
 	<groupId>se.fishtank</groupId>
 	<artifactId>css-selectors</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0.3.1</version>
+	<version>1.0.3.2-SNAPSHOT</version>
 	<name>css-selectors</name>
 	<url>https://github.com/schneidh/css-selectors</url>
     <developers>
@@ -19,6 +19,11 @@
             <email>schneidh@gmail.com</email>
         </developer>
     </developers>
+	  <scm>
+	    <connection>scm:git:https://github.com/schneidh/css-selectors</connection>
+	    <developerConnection>scm:git:https://github.com/schneidh/css-selectors</developerConnection>
+	    <url>https://github.com/schneidh/css-selectors</url>
+	  </scm>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
