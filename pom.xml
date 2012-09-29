@@ -1,10 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>se.fishtank</groupId>
 	<artifactId>css-selectors</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0.3.2-SNAPSHOT</version>
+	<version>1.0.3.2</version>
 	<name>css-selectors</name>
 	<url>https://github.com/schneidh/css-selectors</url>
     <developers>
@@ -23,7 +22,8 @@
 	    <connection>scm:git:https://github.com/schneidh/css-selectors</connection>
 	    <developerConnection>scm:git:https://github.com/schneidh/css-selectors</developerConnection>
 	    <url>https://github.com/schneidh/css-selectors</url>
-	  </scm>
+	    <tag>css-selectors-1.0.3.2</tag>
+  </scm>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
