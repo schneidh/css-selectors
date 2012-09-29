@@ -6,12 +6,17 @@
 	<packaging>jar</packaging>
 	<version>1.0.3.1</version>
 	<name>css-selectors</name>
-	<url>https://github.com/chrsan/css-selectors</url>
+	<url>https://github.com/schneidh/css-selectors</url>
     <developers>
         <developer>
             <id>chrsan</id>
             <name>Christer Sandberg</name>
             <email>chrsan@gmail.com</email>
+        </developer>
+        <developer>
+            <id>schneidh</id>
+            <name>Tom Schneider</name>
+            <email>schneidh@gmail.com</email>
         </developer>
     </developers>
 	<dependencies>
